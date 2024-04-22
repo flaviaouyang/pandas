@@ -509,6 +509,27 @@ class NumpyExtensionArray(  # type: ignore[misc]
 
         return result
 
+    def _validate_setitem_value(self, value):
+        #  A character code (one of 'biufcmMOSUV'), default 'O'
+        array_kind = self.dtype.kind
+        value_type_kind_map = {
+            "u": "int",
+            "i": "int",
+            "U": "str",
+            "S": "bytes",
+            "c": "complex",
+            "f": "float",
+            "b": "bool",
+        }
+
+        if array_kind not in value_type_kind_map:
+            return value
+
+        if type(value).__name__ == value_type_kind_map["array_kind"]:
+            return value
+
+        raise TypeError(f"Invalid value '{value!s}' for dtype {self.dtype}")
+
     # ------------------------------------------------------------------------
     # Ops
 
